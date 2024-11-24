@@ -1,9 +1,4 @@
-import {
-  GitHubBanner,
-  Refine,
-  type AuthProvider,
-  Authenticated,
-} from "@refinedev/core";
+import { Refine, type AuthProvider, Authenticated } from "@refinedev/core";
 import {
   ThemedLayoutV2,
   ErrorComponent,
@@ -29,7 +24,8 @@ import { useFormContext } from "react-hook-form";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 
-import { PostList, PostCreate, PostEdit } from "../src/pages/posts";
+import { AthleteList, AthleteCreate, AthleteEdit } from "../src/pages/athletes";
+import { ClubCreate, ClubEdit, ClubList } from "./pages/clubs";
 
 /**
  *  mock auth credentials to simulate authentication
@@ -179,8 +175,7 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <GitHubBanner />
-      <ThemeProvider theme={RefineThemes.Blue}>
+      <ThemeProvider theme={RefineThemes.YellowDark}>
         <CssBaseline />
         <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
         <RefineSnackbarProvider>
@@ -191,10 +186,10 @@ const App: React.FC = () => {
             notificationProvider={useNotificationProvider}
             resources={[
               {
-                name: "posts",
-                list: "/posts",
-                edit: "/posts/edit/:id",
-                create: "/posts/create",
+                name: "athletes",
+                list: "/athletes",
+                edit: "/athletes/edit/:id",
+                create: "/athletes/create",
               },
             ]}
             options={{
@@ -217,20 +212,25 @@ const App: React.FC = () => {
               >
                 <Route
                   index
-                  element={<NavigateToResource resource="posts" />}
+                  element={<NavigateToResource resource="athletes" />}
                 />
 
-                <Route path="/posts">
-                  <Route index element={<PostList />} />
-                  <Route path="create" element={<PostCreate />} />
-                  <Route path="edit/:id" element={<PostEdit />} />
+                <Route path="/athletes">
+                  <Route index element={<AthleteList />} />
+                  <Route path="create" element={<AthleteCreate />} />
+                  <Route path="edit/:id" element={<AthleteEdit />} />
+                </Route>
+                <Route path="/clubs">
+                  <Route index element={<ClubList />} />
+                  <Route path="create" element={<ClubCreate />} />
+                  <Route path="edit/:id" element={<ClubEdit />} />
                 </Route>
               </Route>
 
               <Route
                 element={
                   <Authenticated key="auth-pages" fallback={<Outlet />}>
-                    <NavigateToResource resource="posts" />
+                    <NavigateToResource resource="athletes" />
                   </Authenticated>
                 }
               >

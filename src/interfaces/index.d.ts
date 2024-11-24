@@ -1,16 +1,22 @@
-export interface ICategory {
+export interface IClub {
   id: number;
-  title: string;
+  clubName: string;
+  clubLogo: string;
+  clubTheme1: string;
+  clubTheme2: string;
 }
 
-export type IStatus = "published" | "draft" | "rejected";
-
-export interface IPost {
+export interface IAthlete {
   id: number;
-  title: string;
-  content: string;
-  status: IStatus;
-  category: ICategory;
+  athleteName: string;
+  athleteBirthDate: string;
+  speedRun: number;
+  secondSpeedRun: number;
+  agilityRun: number;
+  jump: number;
+  flexibility: number;
+  height: number;
+  weight: number;
 }
 
 export type Nullable<T> = {
