@@ -15,10 +15,10 @@ export const useExcelUpload = () => {
       const buffer = e.target.result;
       await workbook.xlsx.load(buffer);
 
-      const worksheet = workbook.getWorksheet(1); // İlk sayfayı al
+      const worksheet = workbook.getWorksheet(1);
       const rows = [];
       worksheet?.eachRow((row, rowNumber) => {
-        rows.push(row.values); // Satırdaki tüm hücre değerlerini al
+        rows.push(row.values);
       });
 
       const formattedData: any[] = rows?.map((row: any) => {
@@ -41,9 +41,8 @@ export const useExcelUpload = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  console.log("data", JSON.stringify(data, null, 2));
-
   return {
     handleFileUpload,
+    data,
   };
 };
