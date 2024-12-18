@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { Divider } from "@mui/material";
 import "./ReportCardStyle.css";
+import logo from "../../assets/images/başaksporlogo.png";
 
 interface ReportProps {
   athlete: {
@@ -52,17 +53,13 @@ const Report: React.FC<ReportProps> = ({ athlete, onClose }) => {
           <Divider
             orientation="vertical"
             flexItem
-            color="black"
+            color="#333"
             sx={{ opacity: 0.6 }}
           />
           <div className="headerRight">
-            {/* <img
-              src={athlete.clubLogo}
-              alt="Kulüp Logosu"
-              className="clubLogo"
-            /> */}
+            <img src={logo} alt="Kulüp Logosu" className="clubLogo" />
             <div>
-              {/* <h1>{athlete.club}</h1> */}
+              <h1>KÜÇÜKBALIKLI BAŞAKSPOR</h1>
               <p>İsim: {athlete.athleteName}</p>
               <p>Doğum Yılı: {athlete.athleteBirthDate}</p>
             </div>
