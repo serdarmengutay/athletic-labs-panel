@@ -25,12 +25,12 @@ export const useExcelUpload = () => {
         return {
           athleteName: row[1],
           athleteBirthDate: row[2],
-          speedRun: row[3],
-          secondSpeedRun: row[4],
-          agilityRun: row[5],
-          flexibility: row[6],
-          height: row[7],
-          weight: row[8],
+          height: row[3],
+          weight: row[4],
+          flexibility: row[5],
+          speedRun: row[6],
+          secondSpeedRun: row[7],
+          agilityRun: row[8],
           jumping: row[9],
         };
       });

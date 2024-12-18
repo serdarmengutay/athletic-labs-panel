@@ -13,7 +13,7 @@ export interface IAthlete {
   speedRun: number;
   secondSpeedRun: number;
   agilityRun: number;
-  jump: number;
+  jumping: number;
   flexibility: number;
   height: number;
   weight: number;
