@@ -43,6 +43,8 @@ const Report: React.FC<ReportProps> = ({ athlete, onClose }) => {
     }
   };
 
+  console.log(athlete);
+
   return (
     <div style={{}}>
       <div className="reportCard" ref={reportCardRef}>
