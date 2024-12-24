@@ -97,6 +97,15 @@ const yearlyStats: IYearlyStats = {
     height: { min: 126, max: 132 },
     weight: { min: 23, max: 34 },
   },
+  "2019": {
+    speedRun: { min: 5.5, max: 6.2 },
+    secondSpeedRun: { min: 5.5, max: 6.2 },
+    agilityRun: { min: 21.0, max: 23.0 },
+    flexibility: { min: 8, max: 12 },
+    jumping: { min: 15, max: 22 },
+    height: { min: 102, max: 110 },
+    weight: { min: 16, max: 22 },
+  },
 };
 
 export const calculatePerformanceScoresWithPercentiles = (
