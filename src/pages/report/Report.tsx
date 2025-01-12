@@ -2,7 +2,8 @@ import React, { useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { Divider } from "@mui/material";
 import "./ReportCardStyle.css";
-import logo from "../../assets/images/başaksporlogo.png";
+import logo from "../../assets/images/yıldırımtestlogo.png";
+import athleticLabsLogo from "../../assets/images/athletic-labs.jpg";
 
 interface ReportProps {
   athlete: {
@@ -43,14 +44,16 @@ const Report: React.FC<ReportProps> = ({ athlete, onClose }) => {
     }
   };
 
-  console.log(athlete);
-
   return (
     <div style={{}}>
       <div className="reportCard" ref={reportCardRef}>
         <header className="header">
           <div>
-            <h1>Athletic Labs</h1>
+            <img
+              src={athleticLabsLogo}
+              alt="Athletic Labs Logo"
+              className="clubLogo"
+            />
           </div>
           <Divider
             orientation="vertical"
@@ -61,7 +64,7 @@ const Report: React.FC<ReportProps> = ({ athlete, onClose }) => {
           <div className="headerRight">
             <img src={logo} alt="Kulüp Logosu" className="clubLogo" />
             <div>
-              <h1>KÜÇÜKBALIKLI BAŞAKSPOR</h1>
+              <h1>BURSA YILDIRIMSPOR</h1>
               <p>İsim: {athlete.athleteName}</p>
               <p>Doğum Yılı: {athlete.athleteBirthDate}</p>
             </div>

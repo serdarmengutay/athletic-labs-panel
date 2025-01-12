@@ -5,7 +5,7 @@ import { IAthlete } from "../../interfaces";
 import { useExcelUpload } from "../../utils/excelUpload";
 import Report from "../report/Report";
 import { calculatePerformanceScoresWithPercentiles } from "../../utils/calculatePerformanceScores";
-import { exportToExcel } from "../../utils/exportToExcel";
+import * as XLSX from "xlsx";
 
 export const AthleteList: React.FC = () => {
   const { dataGridProps } = useDataGrid<IAthlete>();
@@ -167,6 +167,41 @@ export const AthleteList: React.FC = () => {
     }
   }, [data]);
 
+  const fixPercentage = (value: number) => {
+    return value.toFixed(2);
+  };
+
+  const exportToExcel = () => {
+    const formattedData = updatedExcelData.map((athlete: IAthlete) => ({
+      // "Sporcu ID": athlete.id,
+      "Adı Soyadı": athlete.athleteName,
+      "Doğum Tarihi": athlete.athleteBirthDate,
+      Boy: athlete.height,
+      Kilo: athlete.weight,
+      Esneklik: athlete.flexibility,
+      "30 Metre Koşusu": athlete.speedRun,
+      "İkinci 30 Metre": athlete.secondSpeedRun,
+      "Çeviklik Koşusu": athlete.agilityRun,
+      "Dikey Sıçrama": athlete.jumping,
+      "Yüzdelik Dilim": fixPercentage(athlete.percentile),
+    }));
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    ws["!cols"] = [
+      { width: 25 },
+      { width: 10 },
+      { width: 10 },
+      { width: 10 },
+      { width: 10 },
+      { width: 15 },
+      { width: 15 },
+      { width: 15 },
+      { width: 15 },
+      { width: 15 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sporcu Performans Raporu");
+    XLSX.writeFile(wb, "athlete-performance-report.xlsx");
+  };
   return (
     <List>
       <h1>Excel Yükle</h1>
@@ -180,7 +215,7 @@ export const AthleteList: React.FC = () => {
       />
       {selectedAthlete && <Report athlete={selectedAthlete} />}
       <button
-        onClick={() => exportToExcel(updatedExcelData)}
+        onClick={exportToExcel}
         style={{
           padding: "10px 20px",
           backgroundColor: "#4CAF50",
