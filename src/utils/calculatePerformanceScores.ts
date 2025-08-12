@@ -10,6 +10,8 @@ interface IAthlete {
   agilityRun: number;
   jumping: number;
   percentile?: number;
+  bmi?: number;
+  bmiStatus?: string;
 }
 
 interface IYearlyStats {
@@ -25,6 +27,24 @@ interface IYearlyStats {
 }
 
 const yearlyStats: IYearlyStats = {
+  "2009": {
+    speedRun: { min: 4.3, max: 4.8 },
+    secondSpeedRun: { min: 4.3, max: 4.8 },
+    agilityRun: { min: 16.0, max: 17.5 },
+    flexibility: { min: 0, max: 16 },
+    jumping: { min: 36, max: 44 },
+    height: { min: 162, max: 168 },
+    weight: { min: 44, max: 54 },
+  },
+  "2010": {
+    speedRun: { min: 4.4, max: 4.9 },
+    secondSpeedRun: { min: 4.4, max: 4.9 },
+    agilityRun: { min: 16.5, max: 18.0 },
+    flexibility: { min: 0, max: 16 },
+    jumping: { min: 34, max: 42 },
+    height: { min: 158, max: 164 },
+    weight: { min: 42, max: 52 },
+  },
   "2011": {
     speedRun: { min: 4.5, max: 5.0 },
     secondSpeedRun: { min: 4.5, max: 5.0 },
@@ -108,6 +128,48 @@ const yearlyStats: IYearlyStats = {
   },
 };
 
+// BMI hesaplama fonksiyonu
+export const calculateBMI = (
+  weight: number,
+  height: number
+): { bmi: number; status: string } | null => {
+  if (!weight || !height || weight <= 0 || height <= 0) {
+    return null;
+  }
+
+  // Boyu cm'den m'ye çevir
+  const heightInMeters = height / 100;
+  const bmi = weight / (heightInMeters * heightInMeters);
+
+  let status = "";
+  if (bmi < 18.5) {
+    status = "Zayıf";
+  } else if (bmi < 25) {
+    status = "Normal";
+  } else if (bmi < 30) {
+    status = "Fazla Kilolu";
+  } else {
+    status = "Obez";
+  }
+
+  return { bmi: Number(bmi.toFixed(1)), status };
+};
+
+// Yaş grubu ortalamalarını hesaplama fonksiyonu
+export const getAgeGroupAverages = (birthYear: string) => {
+  const stats = yearlyStats[birthYear];
+  if (!stats) return null;
+
+  return {
+    speedRun: (stats.speedRun.min + stats.speedRun.max) / 2,
+    agilityRun: (stats.agilityRun.min + stats.agilityRun.max) / 2,
+    flexibility: (stats.flexibility.min + stats.flexibility.max) / 2,
+    jumping: (stats.jumping.min + stats.jumping.max) / 2,
+    height: (stats.height.min + stats.height.max) / 2,
+    weight: (stats.weight.min + stats.weight.max) / 2,
+  };
+};
+
 export const calculatePerformanceScoresWithPercentiles = (
   athletes: IAthlete[]
 ): IAthlete[] => {
@@ -164,6 +226,9 @@ export const calculatePerformanceScoresWithPercentiles = (
       };
     }
 
+    // BMI hesapla
+    const bmiData = calculateBMI(athlete.weight, athlete.height);
+
     const stats = statsYear;
 
     const scores = {
@@ -210,6 +275,8 @@ export const calculatePerformanceScoresWithPercentiles = (
     return {
       ...athlete,
       percentile: averagePercentile,
+      bmi: bmiData?.bmi,
+      bmiStatus: bmiData?.status,
       performanceDetails: {
         speedRun: scores.speedRun,
         secondSpeedRun: scores.secondSpeedRun,

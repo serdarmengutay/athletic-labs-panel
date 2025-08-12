@@ -17,6 +17,16 @@ export interface IAthlete {
   flexibility: number;
   height: number;
   weight: number;
+  bmi?: number;
+  bmiStatus?: string;
+  percentile?: number;
+  performanceDetails?: {
+    speedRun: number;
+    secondSpeedRun: number;
+    agilityRun: number;
+    flexibility: number;
+    jumping: number;
+  };
 }
 
 export type Nullable<T> = {

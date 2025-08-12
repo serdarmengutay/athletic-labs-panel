@@ -21,6 +21,8 @@ export const useExcelUpload = () => {
         rows.push(row.values);
       });
 
+      console.log("rows", JSON.stringify(rows, null, 2));
+
       const formattedData: any[] = rows?.map((row: any) => {
         return {
           athleteName: row[1],

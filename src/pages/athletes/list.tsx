@@ -10,7 +10,7 @@ import * as XLSX from "xlsx";
 export const AthleteList: React.FC = () => {
   const { dataGridProps } = useDataGrid<IAthlete>();
   const { handleFileUpload, data } = useExcelUpload();
-  const [updatedExcelData, setUpdatedExcelData] = useState([]);
+  const [updatedExcelData, setUpdatedExcelData] = useState<IAthlete[]>([]);
   const [selectedAthlete, setSelectedAthlete] = useState<IAthlete | null>(null); // Karnesi çıkartılacak sporcu
 
   const uploadExcel = async (event: any) => {
@@ -50,6 +50,36 @@ export const AthleteList: React.FC = () => {
         headerName: "Kilo",
         type: "number",
         width: 80,
+      },
+      {
+        field: "bmi",
+        headerName: "VKİ",
+        type: "number",
+        width: 80,
+        valueGetter: (params) => {
+          const row = params.row;
+          if (!row.height || !row.weight) {
+            return "EKSİK VERİ";
+          }
+          return row.bmi ? row.bmi.toFixed(1) : "Hesaplanamadı";
+        },
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "bmiStatus",
+        headerName: "VKİ Durumu",
+        type: "string",
+        width: 100,
+        valueGetter: (params) => {
+          const row = params.row;
+          if (!row.height || !row.weight) {
+            return "EKSİK VERİ";
+          }
+          return row.bmiStatus || "Bilinmiyor";
+        },
+        align: "center",
+        headerAlign: "center",
       },
       {
         field: "flexibility",
@@ -148,7 +178,7 @@ export const AthleteList: React.FC = () => {
             item.jumping !== undefined
         );
 
-      const updatedData = filteredData.map((item, index) => ({
+      const updatedData = filteredData.map((item: any, index) => ({
         ...item,
         id: item?.id || index + 1,
       }));
@@ -167,8 +197,8 @@ export const AthleteList: React.FC = () => {
     }
   }, [data]);
 
-  const fixPercentage = (value: number) => {
-    return value.toFixed(2);
+  const fixPercentage = (value: number | undefined) => {
+    return value ? value.toFixed(2) : "0.00";
   };
 
   const exportToExcel = () => {
@@ -178,6 +208,8 @@ export const AthleteList: React.FC = () => {
       "Doğum Tarihi": athlete.athleteBirthDate,
       Boy: athlete.height,
       Kilo: athlete.weight,
+      "Vücut Kitle Endeksi": athlete.bmi || "EKSİK VERİ",
+      "VKİ Durumu": athlete.bmiStatus || "EKSİK VERİ",
       Esneklik: athlete.flexibility,
       "30 Metre Koşusu": athlete.speedRun,
       "İkinci 30 Metre": athlete.secondSpeedRun,
@@ -191,6 +223,8 @@ export const AthleteList: React.FC = () => {
       { width: 10 },
       { width: 10 },
       { width: 10 },
+      { width: 15 },
+      { width: 15 },
       { width: 10 },
       { width: 15 },
       { width: 15 },
@@ -213,7 +247,12 @@ export const AthleteList: React.FC = () => {
         rows={updatedExcelData}
         getRowId={(row) => row.id}
       />
-      {selectedAthlete && <Report athlete={selectedAthlete} />}
+      {selectedAthlete && (
+        <Report
+          athlete={selectedAthlete}
+          onClose={() => setSelectedAthlete(null)}
+        />
+      )}
       <button
         onClick={exportToExcel}
         style={{

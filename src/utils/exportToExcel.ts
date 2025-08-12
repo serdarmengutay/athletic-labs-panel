@@ -1,4 +1,3 @@
-import { IAthlete } from "../interfaces";
 import * as XLSX from "xlsx";
 
 const fixPercentage = (value: number) => {
