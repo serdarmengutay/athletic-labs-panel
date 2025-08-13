@@ -20,6 +20,7 @@ export interface IAthlete {
   bmi?: number;
   bmiStatus?: string;
   percentile?: number;
+  fatigueIndex?: number;
   performanceDetails?: {
     speedRun: number;
     secondSpeedRun: number;

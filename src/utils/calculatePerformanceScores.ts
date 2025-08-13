@@ -12,6 +12,8 @@ interface IAthlete {
   percentile?: number;
   bmi?: number;
   bmiStatus?: string;
+  fatigueIndex?: number;
+  fatigueIndexPercentile?: number;
 }
 
 interface IYearlyStats {
@@ -170,6 +172,27 @@ export const getAgeGroupAverages = (birthYear: string) => {
   };
 };
 
+// Yorgunluk endeksi hesaplama fonksiyonu
+export const calculateFatigueIndex = (
+  firstRun: number,
+  secondRun: number
+): number => {
+  if (!firstRun || !secondRun) {
+    return 0;
+  }
+
+  // İkinci koşu birinciden daha iyi ise (daha düşük süre)
+  // Bu durumda ikinci koşuyu birinci koşu olarak kabul et
+  if (secondRun < firstRun) {
+    // İkinci koşu daha iyi, yorgunluk endeksi 0 (ideal durum)
+    return 0;
+  } else {
+    // Yorgunluk durumu - ikinci koşu daha yavaş
+    const fatigue = ((secondRun - firstRun) / firstRun) * 100;
+    return fatigue;
+  }
+};
+
 export const calculatePerformanceScoresWithPercentiles = (
   athletes: IAthlete[]
 ): IAthlete[] => {
@@ -229,6 +252,12 @@ export const calculatePerformanceScoresWithPercentiles = (
     // BMI hesapla
     const bmiData = calculateBMI(athlete.weight, athlete.height);
 
+    // Yorgunluk endeksi hesapla
+    const fatigueData = calculateFatigueIndex(
+      athlete.speedRun,
+      athlete.secondSpeedRun
+    );
+
     const stats = statsYear;
 
     const scores = {
@@ -277,6 +306,7 @@ export const calculatePerformanceScoresWithPercentiles = (
       percentile: averagePercentile,
       bmi: bmiData?.bmi,
       bmiStatus: bmiData?.status,
+      fatigueIndex: fatigueData,
       performanceDetails: {
         speedRun: scores.speedRun,
         secondSpeedRun: scores.secondSpeedRun,

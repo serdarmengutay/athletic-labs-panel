@@ -193,13 +193,13 @@ export const AthleteCreate: React.FC = () => {
         />
         <Controller
           control={control}
-          name="jump"
+          name="jumping"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <TextField
               {...field}
-              error={!!errors.jump}
-              helperText={errors.jump?.message}
+              error={!!errors.jumping}
+              helperText={errors.jumping?.message}
               margin="normal"
               label="Dikey Sıçrama"
               type="number"

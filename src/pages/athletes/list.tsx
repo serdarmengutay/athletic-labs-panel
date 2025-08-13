@@ -108,6 +108,50 @@ export const AthleteList: React.FC = () => {
         align: "center",
       },
       {
+        field: "fatigueIndex",
+        headerName: "Yorgunluk Endeksi",
+        type: "number",
+        width: 150,
+        valueGetter: (params) => {
+          const row = params.row;
+          if (!row.fatigueIndex && row.fatigueIndex !== 0) {
+            return "Hesaplanamadı";
+          }
+          if (row.fatigueIndex === 0) {
+            return "%0.0";
+          } else {
+            return `%${row.fatigueIndex.toFixed(1)}`;
+          }
+        },
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const row = params.row;
+          if (!row.fatigueIndex && row.fatigueIndex !== 0) {
+            return <span style={{ color: "#6f6f73" }}>Hesaplanamadı</span>;
+          }
+
+          let color = "#6f6f73";
+          if (row.fatigueIndex === 0) {
+            color = "#4caf50"; // Yeşil - ideal durum
+          } else if (row.fatigueIndex <= 10) {
+            color = "#8bc34a"; // Açık yeşil - düşük yorgunluk
+          } else if (row.fatigueIndex <= 20) {
+            color = "#ff9800"; // Turuncu - orta yorgunluk
+          } else {
+            color = "#f44336"; // Kırmızı - yüksek yorgunluk
+          }
+
+          return (
+            <span style={{ color, fontWeight: "bold" }}>
+              {row.fatigueIndex === 0
+                ? "%0.0"
+                : `%${row.fatigueIndex.toFixed(1)}`}
+            </span>
+          );
+        },
+      },
+      {
         field: "percentile",
         headerName: "Yüzdelik Dilim",
         type: "number",
@@ -215,6 +259,7 @@ export const AthleteList: React.FC = () => {
       "İkinci 30 Metre": athlete.secondSpeedRun,
       "Çeviklik Koşusu": athlete.agilityRun,
       "Dikey Sıçrama": athlete.jumping,
+      "Yorgunluk Endeksi": athlete.fatigueIndex || "Hesaplanamadı",
       "Yüzdelik Dilim": fixPercentage(athlete.percentile),
     }));
     const ws = XLSX.utils.json_to_sheet(formattedData);
@@ -226,6 +271,9 @@ export const AthleteList: React.FC = () => {
       { width: 15 },
       { width: 15 },
       { width: 10 },
+      { width: 15 },
+      { width: 15 },
+      { width: 15 },
       { width: 15 },
       { width: 15 },
       { width: 15 },

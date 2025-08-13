@@ -27,6 +27,7 @@ import {
   Trophy,
   BarChart3,
   PieChart,
+  Gauge,
 } from "lucide-react";
 import "./ReportCardStyle.css";
 import logo from "../../assets/images/athleticlabs_logo.png";
@@ -60,6 +61,7 @@ interface ReportProps {
     percentile?: number;
     bmi?: number;
     bmiStatus?: string;
+    fatigueIndex?: number;
     performanceDetails?: {
       speedRun: number;
       secondSpeedRun: number;
@@ -110,10 +112,36 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
   // Yaş grubu ortalamalarını al
   const ageGroupAverages = getAgeGroupAverages(athlete.athleteBirthDate);
 
-  // Radar grafik verisi - 6 parametre için
+  // Yorgunluk endeksi hesaplama
+  const getFatigueDisplay = () => {
+    if (!athlete.fatigueIndex && athlete.fatigueIndex !== 0)
+      return "Hesaplanamadı";
+
+    if (athlete.fatigueIndex === 0) {
+      return "%0.0";
+    } else {
+      return `%${athlete.fatigueIndex.toFixed(1)}`;
+    }
+  };
+
+  const getFatigueColor = () => {
+    if (!athlete.fatigueIndex && athlete.fatigueIndex !== 0) return "#6f6f73";
+
+    if (athlete.fatigueIndex === 0) {
+      return "#4caf50"; // Yeşil - ideal durum
+    } else if (athlete.fatigueIndex <= 10) {
+      return "#8bc34a"; // Açık yeşil - düşük yorgunluk
+    } else if (athlete.fatigueIndex <= 20) {
+      return "#ff9800"; // Turuncu - orta yorgunluk
+    } else {
+      return "#f44336"; // Kırmızı - yüksek yorgunluk
+    }
+  };
+
+  // Radar grafik verisi - 6 parametre için (yorgunluk endeksi kaldırıldı)
   const radarData = {
     labels: [
-      "BMI",
+      "VKİ",
       "Esneklik",
       "30m Koşu",
       "İkinci 30m",
@@ -166,10 +194,10 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
     ],
   };
 
-  // Sütun grafik verisi - 6 parametre için
+  // Sütun grafik verisi - 6 parametre için (yorgunluk endeksi kaldırıldı)
   const barData = {
     labels: [
-      "BMI",
+      "VKİ",
       "Esneklik",
       "30m Koşu",
       "İkinci 30m",
@@ -329,7 +357,7 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
     },
   };
 
-  // BMI hesaplama
+  // VKİ hesaplama
   const getBMIDisplay = () => {
     if (!athlete.height || !athlete.weight) {
       return "EKSİK VERİDEN DOLAYI HESAPLANAMADI";
@@ -484,6 +512,22 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                   </Box>
                   <Box className="metricRow">
                     <Typography variant="body2" className="metricLabel">
+                      <Gauge
+                        size={16}
+                        style={{ marginRight: 6, verticalAlign: "middle" }}
+                      />
+                      Yorgunluk Endeksi:
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      className="metricValue"
+                      sx={{ color: getFatigueColor() }}
+                    >
+                      {getFatigueDisplay()}
+                    </Typography>
+                  </Box>
+                  <Box className="metricRow">
+                    <Typography variant="body2" className="metricLabel">
                       <Target
                         size={16}
                         style={{ marginRight: 6, verticalAlign: "middle" }}
@@ -602,6 +646,24 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                           üzerinde
                         </Typography>
                       )}
+                      {athlete.fatigueIndex && athlete.fatigueIndex === 0 && (
+                        <Typography
+                          variant="caption"
+                          className="trendItem positive"
+                        >
+                          • İkinci koşuda ideal performans gösteriyor
+                        </Typography>
+                      )}
+                      {athlete.fatigueIndex &&
+                        athlete.fatigueIndex <= 10 &&
+                        athlete.fatigueIndex > 0 && (
+                          <Typography
+                            variant="caption"
+                            className="trendItem positive"
+                          >
+                            • Düşük yorgunluk endeksi
+                          </Typography>
+                        )}
                       {athlete.flexibility >
                         (ageGroupAverages?.flexibility || 0) && (
                         <Typography

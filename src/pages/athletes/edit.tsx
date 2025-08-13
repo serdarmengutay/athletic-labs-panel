@@ -98,7 +98,7 @@ export const AthleteEdit: React.FC = () => {
               error={!!errors.speedRun}
               helperText={errors.speedRun?.message}
               margin="normal"
-              label="Hızlı Koşu"
+              label="30 Metre"
               type="number"
             />
           )}
@@ -113,7 +113,7 @@ export const AthleteEdit: React.FC = () => {
               error={!!errors.secondSpeedRun}
               helperText={errors.secondSpeedRun?.message}
               margin="normal"
-              label="İkinci Hızlı Koşu"
+              label="İkinci 30 Metre"
               type="number"
             />
           )}
@@ -135,15 +135,15 @@ export const AthleteEdit: React.FC = () => {
         />
         <Controller
           control={control}
-          name="jump"
+          name="jumping"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <TextField
               {...field}
-              error={!!errors.jump}
-              helperText={errors.jump?.message}
+              error={!!errors.jumping}
+              helperText={errors.jumping?.message}
               margin="normal"
-              label="Zıplama"
+              label="Dikey Sıçrama"
               type="number"
             />
           )}
