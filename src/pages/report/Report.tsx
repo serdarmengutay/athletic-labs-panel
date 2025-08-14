@@ -127,11 +127,9 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
   const getFatigueColor = () => {
     if (!athlete.fatigueIndex && athlete.fatigueIndex !== 0) return "#6f6f73";
 
-    if (athlete.fatigueIndex === 0) {
-      return "#4caf50"; // Yeşil - ideal durum
-    } else if (athlete.fatigueIndex <= 10) {
-      return "#8bc34a"; // Açık yeşil - düşük yorgunluk
-    } else if (athlete.fatigueIndex <= 20) {
+    if (athlete.fatigueIndex <= 3) {
+      return "#4caf50"; // Yeşil - düşük yorgunluk
+    } else if (athlete.fatigueIndex <= 5) {
       return "#ff9800"; // Turuncu - orta yorgunluk
     } else {
       return "#f44336"; // Kırmızı - yüksek yorgunluk
@@ -567,16 +565,7 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
 
               {/* Genel Performans */}
               {athlete.percentile && (
-                <Paper
-                  elevation={3}
-                  sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+                <Paper elevation={3} sx={{ p: 2, mb: 2, borderRadius: 3 }}>
                   <Typography
                     variant="h6"
                     gutterBottom
@@ -588,7 +577,6 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                   <Box
                     sx={{
                       textAlign: "center",
-                      flex: 1,
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",
@@ -608,7 +596,7 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
 
             {/* Orta - Radar Grafik */}
             <Grid item xs={12} md={4}>
-              <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
+              <Paper elevation={3} sx={{ p: 2, mb: 2, borderRadius: 3 }}>
                 <Typography variant="h6" gutterBottom className="sectionTitle">
                   <PieChart size={24} style={{ marginRight: 8 }} />
                   PERFORMANS RADAR GRAFİĞİ
@@ -616,188 +604,102 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                 <Box sx={{ height: 300, position: "relative" }}>
                   <Radar data={radarData} options={radarOptions} />
                 </Box>
+              </Paper>
 
-                {/* Divider */}
-                <Divider sx={{ my: 2, borderColor: "#6f6f73" }} />
-
-                {/* Performans Trend Analizi */}
-                <Typography variant="h6" gutterBottom className="sectionTitle">
-                  <TrendingUp size={20} style={{ marginRight: 6 }} />
-                  PERFORMANS TREND ANALİZİ
-                </Typography>
-                <Box
-                  sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+              {/* Yorgunluk Endeksi Bilgilendirme Kartı - Küçültülmüş */}
+              <Paper elevation={3} sx={{ p: 1.5, borderRadius: 3 }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  className="sectionTitle"
+                  sx={{ fontSize: "1rem", mb: 1 }}
                 >
-                  {/* Güçlü Yönler */}
-                  <Box className="trendSection">
-                    <Typography
-                      variant="subtitle2"
-                      className="trendTitle positive"
-                    >
-                      💪 Güçlü Yönler
-                    </Typography>
-                    <Box className="trendItems">
-                      {athlete.speedRun < (ageGroupAverages?.speedRun || 0) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem positive"
-                        >
-                          • 30m koşu performansı yaş grubu ortalamasının
-                          üzerinde
-                        </Typography>
-                      )}
-                      {athlete.fatigueIndex && athlete.fatigueIndex === 0 && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem positive"
-                        >
-                          • İkinci koşuda ideal performans gösteriyor
-                        </Typography>
-                      )}
-                      {athlete.fatigueIndex &&
-                        athlete.fatigueIndex <= 10 &&
-                        athlete.fatigueIndex > 0 && (
-                          <Typography
-                            variant="caption"
-                            className="trendItem positive"
-                          >
-                            • Düşük yorgunluk endeksi
-                          </Typography>
-                        )}
-                      {athlete.flexibility >
-                        (ageGroupAverages?.flexibility || 0) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem positive"
-                        >
-                          • Esneklik seviyesi yüksek
-                        </Typography>
-                      )}
-                      {athlete.bmi &&
-                        athlete.bmi >= 18.5 &&
-                        athlete.bmi <= 25 && (
-                          <Typography
-                            variant="caption"
-                            className="trendItem positive"
-                          >
-                            • VKİ normal aralıkta
-                          </Typography>
-                        )}
-                      {(!athlete.speedRun ||
-                        !athlete.flexibility ||
-                        !athlete.bmi) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem neutral"
-                        >
-                          • Veri yetersizliği nedeniyle analiz yapılamadı
-                        </Typography>
-                      )}
-                    </Box>
-                  </Box>
+                  <Gauge size={18} style={{ marginRight: 6 }} />
+                  YORGUNLUK ENDEKSİ
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Typography
+                    variant="caption"
+                    className="trendItem positive"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    Düşük (%0–3): Sporcu tekrar sprintlerde yüksek formunu
+                    koruyabiliyor, toparlanma ve anaerobik kapasitesi güçlü.
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="trendItem improvement"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    Orta (%3–5): Orta düzey toparlanma, dayanıklılık
+                    geliştirmeye açık alan var.
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="trendItem negative"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    Yüksek (%5+): Sporcunun tekrar sprintlerde hızlı
+                    yorgunlaştığını, anaerobik gücün çabuk düştüğünü gösterir.
+                  </Typography>
+                </Box>
+              </Paper>
 
-                  {/* Geliştirilmesi Gereken Alanlar */}
-                  <Box className="trendSection">
-                    <Typography
-                      variant="subtitle2"
-                      className="trendTitle improvement"
-                    >
-                      🎯 Geliştirilmesi Gereken Alanlar
-                    </Typography>
-                    <Box className="trendItems">
-                      {athlete.speedRun > (ageGroupAverages?.speedRun || 0) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem improvement"
-                        >
-                          • 30m koşu hızı artırılabilir
-                        </Typography>
-                      )}
-                      {athlete.agilityRun >
-                        (ageGroupAverages?.agilityRun || 0) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem improvement"
-                        >
-                          • Çeviklik koşusu geliştirilebilir
-                        </Typography>
-                      )}
-                      {athlete.jumping < (ageGroupAverages?.jumping || 0) && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem improvement"
-                        >
-                          • Dikey sıçrama gücü artırılabilir
-                        </Typography>
-                      )}
-                      {athlete.bmi && athlete.bmi < 18.5 && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem improvement"
-                        >
-                          • Beslenme programı ile kilo artırımı önerilir
-                        </Typography>
-                      )}
-                      {athlete.bmi && athlete.bmi > 25 && (
-                        <Typography
-                          variant="caption"
-                          className="trendItem improvement"
-                        >
-                          • Kilo kontrolü ve egzersiz programı önerilir
-                        </Typography>
-                      )}
-                    </Box>
-                  </Box>
+              {/* 3 Aylık Hedefler Kartı - Daraltılmış */}
+              <Paper elevation={3} sx={{ p: 1.5, borderRadius: 3, mt: 1 }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  className="sectionTitle"
+                  sx={{ fontSize: "1rem", mb: 1 }}
+                >
+                  <Target size={18} style={{ marginRight: 6 }} />3 AYLIK
+                  HEDEFLER
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Typography
+                    variant="caption"
+                    className="exerciseItem"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    • 30m koşu: {(athlete.speedRun * 0.9).toFixed(2)}s hedefi
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="exerciseItem"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    • Çeviklik: {(athlete.agilityRun * 0.95).toFixed(2)}s hedefi
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="exerciseItem"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    • Dikey sıçrama: {(athlete.jumping * 1.1).toFixed(0)}cm
+                    hedefi
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="exerciseItem"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    • Esneklik: {(athlete.flexibility * 1.15).toFixed(0)}cm
+                    hedefi
+                  </Typography>
                 </Box>
               </Paper>
             </Grid>
 
             {/* Sağ - Sütun Grafik */}
             <Grid item xs={12} md={4}>
-              <Paper elevation={3} sx={{ p: 2, borderRadius: 3 }}>
+              <Paper elevation={3} sx={{ p: 2, mb: 2, borderRadius: 3 }}>
                 <Typography variant="h6" gutterBottom className="sectionTitle">
                   <BarChart3 size={24} style={{ marginRight: 8 }} />
                   YAŞ GRUBU KARŞILAŞTIRMASI
                 </Typography>
                 <Box sx={{ height: 300, position: "relative" }}>
                   <Bar data={barData} options={barOptions} />
-                </Box>
-
-                {/* Divider */}
-                <Divider sx={{ my: 2, borderColor: "#6f6f73" }} />
-
-                {/* Egzersiz Önerileri */}
-                <Typography variant="h6" gutterBottom className="sectionTitle">
-                  <Target size={20} style={{ marginRight: 6 }} />
-                  EGZERSİZ ÖNERİLERİ
-                </Typography>
-                <Box
-                  sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
-                >
-                  {/* Hedefler */}
-                  <Box className="exerciseSection">
-                    <Typography variant="subtitle2" className="exerciseTitle">
-                      🎯 3 Aylık Hedefler
-                    </Typography>
-                    <Box className="exerciseItems">
-                      <Typography variant="caption" className="exerciseItem">
-                        • 30m koşu: {(athlete.speedRun * 0.9).toFixed(2)}s
-                        hedefi
-                      </Typography>
-                      <Typography variant="caption" className="exerciseItem">
-                        • Çeviklik: {(athlete.agilityRun * 0.95).toFixed(2)}s
-                        hedefi
-                      </Typography>
-                      <Typography variant="caption" className="exerciseItem">
-                        • Dikey sıçrama: {(athlete.jumping * 1.1).toFixed(0)}cm
-                        hedefi
-                      </Typography>
-                      <Typography variant="caption" className="exerciseItem">
-                        • Esneklik: {(athlete.flexibility * 1.15).toFixed(0)}cm
-                        hedefi
-                      </Typography>
-                    </Box>
-                  </Box>
                 </Box>
               </Paper>
             </Grid>

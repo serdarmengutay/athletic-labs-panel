@@ -300,6 +300,14 @@ canvas {
   font-style: italic;
 }
 
+.trendTitle.negative {
+  color: #ef4444 !important;
+}
+
+.trendItem.negative {
+  color: #ef4444 !important;
+}
+
 .exerciseSection {
   margin-bottom: 12px;
 }
