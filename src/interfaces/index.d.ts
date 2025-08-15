@@ -17,6 +17,7 @@ export interface IAthlete {
   flexibility: number;
   height: number;
   weight: number;
+  ffmi?: number;
   bmi?: number;
   bmiStatus?: string;
   percentile?: number;

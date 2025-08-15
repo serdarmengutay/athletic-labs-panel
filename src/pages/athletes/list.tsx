@@ -82,6 +82,22 @@ export const AthleteList: React.FC = () => {
         headerAlign: "center",
       },
       {
+        field: "ffmi",
+        headerName: "FFMI",
+        type: "number",
+        width: 80,
+        valueGetter: (params) => {
+          const row = params.row;
+          if (!row.ffmi) {
+            return "EKSİK VERİ";
+          }
+          const ffmiValue = parseFloat(String(row.ffmi));
+          return !isNaN(ffmiValue) ? ffmiValue.toFixed(1) : "Hesaplanamadı";
+        },
+        align: "center",
+        headerAlign: "center",
+      },
+      {
         field: "flexibility",
         headerName: "Esneklik",
         type: "number",
@@ -210,6 +226,8 @@ export const AthleteList: React.FC = () => {
             item.height !== undefined &&
             item.weight !== null &&
             item.weight !== undefined &&
+            item.ffmi !== null &&
+            item.ffmi !== undefined &&
             item.flexibility !== null &&
             item.flexibility !== undefined &&
             item.speedRun !== null &&
@@ -254,6 +272,10 @@ export const AthleteList: React.FC = () => {
       Kilo: athlete.weight,
       "Vücut Kitle Endeksi": athlete.bmi || "EKSİK VERİ",
       "VKİ Durumu": athlete.bmiStatus || "EKSİK VERİ",
+      FFMI:
+        athlete.ffmi && !isNaN(Number(athlete.ffmi))
+          ? Number(athlete.ffmi).toFixed(1)
+          : "EKSİK VERİ",
       Esneklik: athlete.flexibility,
       "30 Metre Koşusu": athlete.speedRun,
       "İkinci 30 Metre": athlete.secondSpeedRun,
@@ -270,6 +292,7 @@ export const AthleteList: React.FC = () => {
       { width: 10 },
       { width: 15 },
       { width: 15 },
+      { width: 10 },
       { width: 10 },
       { width: 15 },
       { width: 15 },

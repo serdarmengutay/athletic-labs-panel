@@ -27,13 +27,14 @@ export const useExcelUpload = () => {
         return {
           athleteName: row[1],
           athleteBirthDate: row[2],
-          height: row[3],
-          weight: row[4],
-          flexibility: row[5],
-          speedRun: row[6],
-          secondSpeedRun: row[7],
-          agilityRun: row[8],
-          jumping: row[9],
+          height: Number(row[3]) || 0,
+          weight: Number(row[4]) || 0,
+          flexibility: Number(row[5]) || 0,
+          speedRun: Number(row[6]) || 0,
+          secondSpeedRun: Number(row[7]) || 0,
+          agilityRun: Number(row[8]) || 0,
+          jumping: Number(row[9]) || 0,
+          ffmi: Number(row[10]) || 0,
         };
       });
 

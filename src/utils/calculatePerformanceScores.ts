@@ -9,6 +9,7 @@ interface IAthlete {
   secondSpeedRun: number;
   agilityRun: number;
   jumping: number;
+  ffmi?: number;
   percentile?: number;
   bmi?: number;
   bmiStatus?: string;
@@ -25,6 +26,7 @@ interface IYearlyStats {
     jumping: { min: number; max: number };
     height: { min: number; max: number };
     weight: { min: number; max: number };
+    ffmi: { min: number; max: number };
   };
 }
 
@@ -37,6 +39,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 36, max: 44 },
     height: { min: 162, max: 168 },
     weight: { min: 44, max: 54 },
+    ffmi: { min: 16.8, max: 18.2 },
   },
   "2010": {
     speedRun: { min: 4.4, max: 4.9 },
@@ -46,6 +49,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 34, max: 42 },
     height: { min: 158, max: 164 },
     weight: { min: 42, max: 52 },
+    ffmi: { min: 16.2, max: 17.6 },
   },
   "2011": {
     speedRun: { min: 4.5, max: 5.0 },
@@ -55,6 +59,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 32, max: 40 },
     height: { min: 154, max: 160 },
     weight: { min: 40, max: 50 },
+    ffmi: { min: 15.6, max: 17.0 },
   },
   "2012": {
     speedRun: { min: 4.6, max: 5.1 },
@@ -64,6 +69,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 30, max: 38 },
     height: { min: 150, max: 156 },
     weight: { min: 38, max: 48 },
+    ffmi: { min: 15.0, max: 16.4 },
   },
   "2013": {
     speedRun: { min: 4.7, max: 5.2 },
@@ -73,6 +79,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 28, max: 36 },
     height: { min: 146, max: 152 },
     weight: { min: 35, max: 45 },
+    ffmi: { min: 14.4, max: 15.8 },
   },
   "2014": {
     speedRun: { min: 4.8, max: 5.3 },
@@ -82,6 +89,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 26, max: 34 },
     height: { min: 142, max: 148 },
     weight: { min: 32, max: 42 },
+    ffmi: { min: 13.8, max: 15.2 },
   },
   "2015": {
     speedRun: { min: 4.9, max: 5.4 },
@@ -91,6 +99,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 24, max: 32 },
     height: { min: 138, max: 144 },
     weight: { min: 30, max: 40 },
+    ffmi: { min: 13.2, max: 14.6 },
   },
   "2016": {
     speedRun: { min: 5.0, max: 5.5 },
@@ -100,6 +109,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 22, max: 30 },
     height: { min: 134, max: 140 },
     weight: { min: 28, max: 38 },
+    ffmi: { min: 12.6, max: 14.0 },
   },
   "2017": {
     speedRun: { min: 5.1, max: 5.6 },
@@ -109,6 +119,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 20, max: 28 },
     height: { min: 130, max: 136 },
     weight: { min: 25, max: 36 },
+    ffmi: { min: 12.0, max: 13.4 },
   },
   "2018": {
     speedRun: { min: 5.3, max: 5.8 },
@@ -118,6 +129,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 18, max: 26 },
     height: { min: 126, max: 132 },
     weight: { min: 23, max: 34 },
+    ffmi: { min: 11.4, max: 12.8 },
   },
   "2019": {
     speedRun: { min: 5.5, max: 6.2 },
@@ -127,6 +139,7 @@ const yearlyStats: IYearlyStats = {
     jumping: { min: 15, max: 22 },
     height: { min: 102, max: 110 },
     weight: { min: 16, max: 22 },
+    ffmi: { min: 10.0, max: 11.4 },
   },
 };
 
@@ -169,6 +182,7 @@ export const getAgeGroupAverages = (birthYear: string) => {
     jumping: (stats.jumping.min + stats.jumping.max) / 2,
     height: (stats.height.min + stats.height.max) / 2,
     weight: (stats.weight.min + stats.weight.max) / 2,
+    ffmi: (stats.ffmi.min + stats.ffmi.max) / 2,
   };
 };
 

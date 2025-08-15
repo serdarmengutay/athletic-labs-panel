@@ -58,6 +58,7 @@ interface ReportProps {
     agilityRun: number;
     flexibility: number;
     jumping: number;
+    ffmi?: number;
     percentile?: number;
     bmi?: number;
     bmiStatus?: string;
@@ -472,6 +473,24 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                       {getBMIDisplay()}
                     </Typography>
                   </Box>
+                  <Box className="metricRow">
+                    <Typography variant="body2" className="metricLabel">
+                      <Activity
+                        size={16}
+                        style={{ marginRight: 6, verticalAlign: "middle" }}
+                      />
+                      FFMI:
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      className="metricValue"
+                      color={!athlete.ffmi ? "error.main" : "primary.main"}
+                    >
+                      {athlete.ffmi && !isNaN(Number(athlete.ffmi))
+                        ? `${Number(athlete.ffmi).toFixed(1)}`
+                        : "Hesaplanamadı"}
+                    </Typography>
+                  </Box>
                 </Box>
               </Paper>
 
@@ -606,7 +625,7 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                 </Box>
               </Paper>
 
-              {/* Yorgunluk Endeksi Bilgilendirme Kartı - Küçültülmüş */}
+              {/* Birleştirilmiş Bilgilendirme Kartı */}
               <Paper elevation={3} sx={{ p: 1.5, borderRadius: 3 }}>
                 <Typography
                   variant="h6"
@@ -615,9 +634,25 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                   sx={{ fontSize: "1rem", mb: 1 }}
                 >
                   <Gauge size={18} style={{ marginRight: 6 }} />
-                  YORGUNLUK ENDEKSİ
+                  BİLGİLENDİRME
                 </Typography>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+
+                {/* Yorgunluk Endeksi Bölümü */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    mb: 2,
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    className="trendItem positive"
+                    sx={{ fontSize: "0.7rem", fontWeight: "bold" }}
+                  >
+                    YORGUNLUK ENDEKSİ:
+                  </Typography>
                   <Typography
                     variant="caption"
                     className="trendItem positive"
@@ -643,20 +678,45 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                     yorgunlaştığını, anaerobik gücün çabuk düştüğünü gösterir.
                   </Typography>
                 </Box>
-              </Paper>
 
-              {/* 3 Aylık Hedefler Kartı - Daraltılmış */}
-              <Paper elevation={3} sx={{ p: 1.5, borderRadius: 3, mt: 1 }}>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  className="sectionTitle"
-                  sx={{ fontSize: "1rem", mb: 1 }}
+                {/* FFMI Bölümü */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    mb: 2,
+                  }}
                 >
-                  <Target size={18} style={{ marginRight: 6 }} />3 AYLIK
-                  HEDEFLER
-                </Typography>
+                  <Typography
+                    variant="caption"
+                    className="trendItem positive"
+                    sx={{ fontSize: "0.7rem", fontWeight: "bold" }}
+                  >
+                    FFMI NEDİR:
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    className="trendItem positive"
+                    sx={{ fontSize: "0.7rem" }}
+                  >
+                    Yağsız Vücut Kitle Endeksi (FFMI), BMI ile
+                    karşılaştırıldığında, FFMI yağ faktörünü dışlar ve büyük kas
+                    kütlesine sahip insanların fiziksel durumunu daha objektif
+                    olarak yansıtabilir. Bu nedenle genellikle insanın vücudunun
+                    güçlülük derecesini ölçmek için kullanılır.
+                  </Typography>
+                </Box>
+
+                {/* 3 Aylık Hedefler Bölümü */}
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Typography
+                    variant="caption"
+                    className="trendItem positive"
+                    sx={{ fontSize: "0.7rem", fontWeight: "bold" }}
+                  >
+                    3 AYLIK HEDEFLER:
+                  </Typography>
                   <Typography
                     variant="caption"
                     className="exerciseItem"

@@ -90,6 +90,21 @@ export const AthleteEdit: React.FC = () => {
         />
         <Controller
           control={control}
+          name="ffmi"
+          rules={{ required: "This field is required" }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              error={!!errors.ffmi}
+              helperText={errors.ffmi?.message}
+              margin="normal"
+              label="FFMI"
+              type="number"
+            />
+          )}
+        />
+        <Controller
+          control={control}
           name="speedRun"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
