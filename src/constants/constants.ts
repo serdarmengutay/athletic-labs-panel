@@ -52,3 +52,57 @@ export const speedAverages = {
   "2017": { min: 5.1, max: 5.6 },
   "2018": { min: 5.3, max: 5.8 },
 };
+
+// Avrupa'nın 5 büyük ligindeki 2012 doğumlu sporcuların ortalama dereceleri
+export const europeanLeagueAverages = {
+  Almanya: {
+    speedRun: { min: 4.4, max: 4.9 },
+    secondSpeedRun: { min: 4.5, max: 5.0 },
+    agilityRun: { min: 16.2, max: 17.6 },
+    flexibility: { min: 1, max: 15 },
+    jumping: { min: 37, max: 45 },
+    height: { min: 163, max: 169 },
+    weight: { min: 45, max: 55 },
+    ffmi: { min: 16.9, max: 18.3 },
+  },
+  İspanya: {
+    speedRun: { min: 4.3, max: 4.8 },
+    secondSpeedRun: { min: 4.4, max: 4.9 },
+    agilityRun: { min: 15.8, max: 17.2 },
+    flexibility: { min: 2, max: 17 },
+    jumping: { min: 38, max: 46 },
+    height: { min: 162, max: 168 },
+    weight: { min: 44, max: 53 },
+    ffmi: { min: 16.7, max: 18.1 },
+  },
+  İngiltere: {
+    speedRun: { min: 4.5, max: 5.0 },
+    secondSpeedRun: { min: 4.6, max: 5.1 },
+    agilityRun: { min: 16.5, max: 17.9 },
+    flexibility: { min: 0, max: 14 },
+    jumping: { min: 36, max: 43 },
+    height: { min: 164, max: 170 },
+    weight: { min: 46, max: 56 },
+    ffmi: { min: 17.0, max: 18.4 },
+  },
+  İtalya: {
+    speedRun: { min: 4.4, max: 4.9 },
+    secondSpeedRun: { min: 4.5, max: 5.0 },
+    agilityRun: { min: 16.1, max: 17.4 },
+    flexibility: { min: 3, max: 16 },
+    jumping: { min: 39, max: 47 },
+    height: { min: 163, max: 169 },
+    weight: { min: 45, max: 54 },
+    ffmi: { min: 16.8, max: 18.2 },
+  },
+  Fransa: {
+    speedRun: { min: 4.3, max: 4.8 },
+    secondSpeedRun: { min: 4.4, max: 4.9 },
+    agilityRun: { min: 15.9, max: 17.3 },
+    flexibility: { min: 1, max: 15 },
+    jumping: { min: 37, max: 44 },
+    height: { min: 162, max: 168 },
+    weight: { min: 44, max: 53 },
+    ffmi: { min: 16.7, max: 18.0 },
+  },
+};

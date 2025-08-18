@@ -32,6 +32,7 @@ import {
 import "./ReportCardStyle.css";
 import logo from "../../assets/images/athleticlabs_logo.png";
 import { getAgeGroupAverages } from "../../utils/calculatePerformanceScores";
+import { europeanLeagueAverages } from "../../constants/constants";
 
 // Chart.js kayıt
 ChartJS.register(
@@ -99,11 +100,11 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
         });
 
         const link = document.createElement("a");
-        link.download = `${athlete.athleteName}_karne.png`;
-        link.href = canvas.toDataURL("image/png", 1.0);
+        link.download = `${athlete.athleteName}_karne.jpg`;
+        link.href = canvas.toDataURL("image/jpeg", 0.9);
         link.click();
       } catch (error) {
-        console.error("PNG export hatası:", error);
+        console.error("JPEG export hatası:", error);
       } finally {
         setIsLoading(false);
       }
@@ -112,6 +113,44 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
 
   // Yaş grubu ortalamalarını al
   const ageGroupAverages = getAgeGroupAverages(athlete.athleteBirthDate);
+
+  // Avrupa ligleri karşılaştırma fonksiyonları
+  const getEuropeanComparison = (metric: string, athleteValue: number) => {
+    const comparisons: Array<{
+      country: string;
+      average: string;
+      difference: string;
+      percentage: string;
+      status: "above" | "below" | "equal";
+    }> = [];
+
+    Object.entries(europeanLeagueAverages).forEach(([country, averages]) => {
+      const metricData = averages[metric as keyof typeof averages];
+      if (metricData) {
+        const { min, max } = metricData;
+        const average = (min + max) / 2;
+        const difference = athleteValue - average;
+        const percentage = (difference / average) * 100;
+
+        comparisons.push({
+          country,
+          average: average.toFixed(1),
+          difference: difference.toFixed(1),
+          percentage: percentage.toFixed(1),
+          status: difference > 0 ? "above" : difference < 0 ? "below" : "equal",
+        });
+      }
+    });
+
+    return comparisons;
+  };
+
+  const getBestEuropeanLeague = (metric: string, athleteValue: number) => {
+    const comparisons = getEuropeanComparison(metric, athleteValue);
+    return comparisons.reduce((best, current) => {
+      return current.percentage > best.percentage ? current : best;
+    });
+  };
 
   // Yorgunluk endeksi hesaplama
   const getFatigueDisplay = () => {
@@ -762,6 +801,436 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
                   <Bar data={barData} options={barOptions} />
                 </Box>
               </Paper>
+
+              {/* Avrupa Ligleri Karşılaştırması */}
+              <Paper
+                elevation={3}
+                sx={{ p: 1.5, mb: 2, borderRadius: 3, height: 516 }}
+              >
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  className="sectionTitle"
+                  sx={{ fontSize: "1rem", mb: 1 }}
+                >
+                  <Trophy size={20} style={{ marginRight: 6 }} />
+                  AVRUPA LİGLERİ KARŞILAŞTIRMASI
+                </Typography>
+
+                {/* Lig Karşılaştırmaları */}
+                <Grid
+                  container
+                  spacing={1}
+                  sx={{
+                    height: "calc(100% - 70px)",
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    alignContent: "space-between",
+                  }}
+                >
+                  {/* 30m Koşu */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        30m KOŞU
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison(
+                          "speedRun",
+                          athlete.speedRun
+                        ).map((comp, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                            >
+                              {comp.country}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color:
+                                  comp.status === "above"
+                                    ? "#4caf50"
+                                    : comp.status === "below"
+                                    ? "#f44336"
+                                    : "#6f6f73",
+                                fontWeight: "bold",
+                                fontSize: "0.6rem",
+                              }}
+                            >
+                              {comp.status === "above" ? "+" : ""}
+                              {comp.percentage}%
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </Grid>
+
+                  {/* Çeviklik */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        ÇEVİKLİK
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison(
+                          "agilityRun",
+                          athlete.agilityRun
+                        ).map((comp, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                            >
+                              {comp.country}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color:
+                                  comp.status === "above"
+                                    ? "#4caf50"
+                                    : comp.status === "below"
+                                    ? "#f44336"
+                                    : "#6f6f73",
+                                fontWeight: "bold",
+                                fontSize: "0.6rem",
+                              }}
+                            >
+                              {comp.status === "above" ? "+" : ""}
+                              {comp.percentage}%
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </Grid>
+
+                  {/* Dikey Sıçrama */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        DİKEY SIÇRAMA
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison("jumping", athlete.jumping).map(
+                          (comp, index) => (
+                            <Box
+                              key={index}
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                mb: 0.5,
+                                alignItems: "center",
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                              >
+                                {comp.country}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color:
+                                    comp.status === "above"
+                                      ? "#4caf50"
+                                      : comp.status === "below"
+                                      ? "#f44336"
+                                      : "#6f6f73",
+                                  fontWeight: "bold",
+                                  fontSize: "0.6rem",
+                                }}
+                              >
+                                {comp.status === "above" ? "+" : ""}
+                                {comp.percentage}%
+                              </Typography>
+                            </Box>
+                          )
+                        )}
+                      </Box>
+                    </Box>
+                  </Grid>
+
+                  {/* İkinci 30m */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        İKİNCİ 30M
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison(
+                          "secondSpeedRun",
+                          athlete.secondSpeedRun
+                        ).map((comp, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                            >
+                              {comp.country}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color:
+                                  comp.status === "above"
+                                    ? "#4caf50"
+                                    : comp.status === "below"
+                                    ? "#f44336"
+                                    : "#6f6f73",
+                                fontWeight: "bold",
+                                fontSize: "0.6rem",
+                              }}
+                            >
+                              {comp.status === "above" ? "+" : ""}
+                              {comp.percentage}%
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </Grid>
+
+                  {/* Esneklik */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        ESNEKLİK
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison(
+                          "flexibility",
+                          athlete.flexibility
+                        ).map((comp, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              mb: 0.5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                            >
+                              {comp.country}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color:
+                                  comp.status === "above"
+                                    ? "#4caf50"
+                                    : comp.status === "below"
+                                    ? "#f44336"
+                                    : "#6f6f73",
+                                fontWeight: "bold",
+                                fontSize: "0.6rem",
+                              }}
+                            >
+                              {comp.status === "above" ? "+" : ""}
+                              {comp.percentage}%
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </Grid>
+
+                  {/* FFMI */}
+                  <Grid item xs={6} sx={{ height: "35%" }}>
+                    <Box
+                      sx={{
+                        p: 1,
+                        border: "1px solid rgba(228, 252, 85, 0.3)",
+                        borderRadius: 2,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          color: "#e4fc55",
+                          mb: 0.5,
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.7rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        FFMI
+                      </Typography>
+                      <Box sx={{ flex: 1, overflow: "hidden", p: 0.5 }}>
+                        {getEuropeanComparison("ffmi", athlete.ffmi || 0).map(
+                          (comp, index) => (
+                            <Box
+                              key={index}
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                mb: 0.5,
+                                alignItems: "center",
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                sx={{ color: "#ffffff", fontSize: "0.6rem" }}
+                              >
+                                {comp.country}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color:
+                                    comp.status === "above"
+                                      ? "#4caf50"
+                                      : comp.status === "below"
+                                      ? "#f44336"
+                                      : "#6f6f73",
+                                  fontWeight: "bold",
+                                  fontSize: "0.6rem",
+                                }}
+                              >
+                                {comp.status === "above" ? "+" : ""}
+                                {comp.percentage}%
+                              </Typography>
+                            </Box>
+                          )
+                        )}
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
             </Grid>
           </Grid>
         </div>
@@ -771,7 +1240,7 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
       {isLoading && (
         <Box className="loadingOverlay">
           <Typography variant="h6" color="white">
-            PNG hazırlanıyor...
+            JPG hazırlanıyor...
           </Typography>
         </Box>
       )}
