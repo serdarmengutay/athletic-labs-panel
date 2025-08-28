@@ -32,7 +32,7 @@ import {
 import "./ReportCardStyle.css";
 import logo from "../../assets/images/athleticlabs_logo.png";
 import { getAgeGroupAverages } from "../../utils/calculatePerformanceScores";
-import { europeanLeagueAverages } from "../../constants/constants";
+import { getEuropeanLeagueAverages } from "../../constants/constants";
 
 // Chart.js kayıt
 ChartJS.register(
@@ -124,7 +124,10 @@ const Report: React.FC<ReportProps> = ({ athlete }) => {
       status: "above" | "below" | "equal";
     }> = [];
 
-    Object.entries(europeanLeagueAverages).forEach(([country, averages]) => {
+    const europeanAverages = getEuropeanLeagueAverages(
+      athlete.athleteBirthDate
+    );
+    Object.entries(europeanAverages).forEach(([country, averages]) => {
       const metricData = averages[metric as keyof typeof averages];
       if (metricData) {
         const { min, max } = metricData;
