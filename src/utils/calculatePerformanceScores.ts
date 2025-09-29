@@ -216,33 +216,21 @@ export const calculatePerformanceScoresWithPercentiles = (
     max: number,
     isBetterLower: boolean
   ) => {
-    const average = (min + max) / 2;
+    // Değer aralığın dışındaysa uç değerler ver ama çok keskin olmasın
+    if (value < min) {
+      return isBetterLower ? 0 : 100; // Koşu için düşük değer iyi (düşük yüzdelik), diğerleri için düşük değer kötü (yüksek yüzdelik)
+    } else if (value > max) {
+      return isBetterLower ? 100 : 0; // Koşu için yüksek değer kötü (yüksek yüzdelik), diğerleri için yüksek değer iyi (düşük yüzdelik)
+    }
+
+    // Değer aralık içindeyse normal yüzdelik hesapla
     let percentile = ((value - min) / (max - min)) * 100;
 
-    if (isBetterLower) {
-      if (value < average) {
-        percentile = Math.min(
-          100,
-          percentile + ((average - value) / average) * 20
-        );
-      } else if (value > average) {
-        percentile = Math.max(
-          15,
-          percentile - ((value - average) / average) * 20
-        );
-      }
-    } else {
-      if (value > average) {
-        percentile = Math.min(
-          100,
-          percentile + ((value - average) / average) * 20
-        );
-      } else if (value < average) {
-        percentile = Math.max(
-          15,
-          percentile - ((average - value) / average) * 20
-        );
-      }
+    // isBetterLower true ise (koşu süreleri gibi), düşük değer daha iyi (düşük yüzdelik) → Tersine çevirme
+    // isBetterLower false ise (boy, esneklik, sıçrama gibi), yüksek değer daha iyi (düşük yüzdelik) → Tersine çevir
+    if (!isBetterLower) {
+      // Yüksek değer daha iyi - yüzdelik tersine çevrilir
+      percentile = 100 - percentile;
     }
 
     return Math.max(0, Math.min(100, percentile));
@@ -305,6 +293,20 @@ export const calculatePerformanceScoresWithPercentiles = (
         stats.jumping.max,
         false
       ),
+      height: calculatePercentile(
+        athlete.height,
+        stats.height.min,
+        stats.height.max,
+        false
+      ),
+      ffmi: athlete.ffmi
+        ? calculatePercentile(
+            athlete.ffmi,
+            stats.ffmi.min,
+            stats.ffmi.max,
+            false
+          )
+        : 0,
     };
 
     const averagePercentile =
@@ -312,8 +314,10 @@ export const calculatePerformanceScoresWithPercentiles = (
         scores.secondSpeedRun +
         scores.agilityRun +
         scores.flexibility +
-        scores.jumping) /
-      5;
+        scores.jumping +
+        scores.height +
+        scores.ffmi) /
+      7;
 
     return {
       ...athlete,
@@ -327,6 +331,8 @@ export const calculatePerformanceScoresWithPercentiles = (
         agilityRun: scores.agilityRun,
         flexibility: scores.flexibility,
         jumping: scores.jumping,
+        height: scores.height,
+        ffmi: scores.ffmi,
       },
     };
   });
